@@ -1,0 +1,225 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actividad Interactiva: Ecuaciones 1º ESO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white rounded-xl shadow-lg p-6 max-w-md w-full" id="app">
+    <!-- TÍTULO DINÁMICO DE LA ACTIVIDAD -->
+    <h1 class="text-2xl font-bold text-center text-indigo-600 mb-1" id="titulo-app">Cargando...</h1>
+    <p class="text-xs text-center text-gray-400 font-semibold uppercase tracking-wider mb-4">Matemáticas 1º ESO</p>
+
+    <!-- PANTALLA 1: REGISTRO DEL ALUMNO -->
+    <div id="pantalla-registro">
+      <p class="text-gray-600 mb-4 text-sm">Introduce tus datos para registrar tu puntuación al finalizar la actividad.</p>
+      
+      <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre y Apellidos:</label>
+      <input type="text" id="nombre" placeholder="Ej: María García López" class="w-full p-2 border rounded mb-3 focus:outline-indigo-500">
+      
+      <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Curso / Grupo:</label>
+      <select id="curso" class="w-full p-2 border rounded mb-4 focus:outline-indigo-500 bg-white">
+        <option value="">-- Selecciona tu grupo --</option>
+        <option value="1º ESO A">1º ESO A</option>
+        <option value="1º ESO B">1º ESO B</option>
+        <option value="1º ESO C">1º ESO C</option>
+        <option value="1º ESO D">1º ESO D</option>
+        <option value="Otro">Otro</option>
+      </select>
+
+      <button onclick="empezar()" class="w-full bg-indigo-600 text-white py-2.5 rounded font-semibold hover:bg-indigo-700 transition">Comenzar Actividad</button>
+    </div>
+
+    <!-- PANTALLA 2: EJERCICIOS -->
+    <div id="pantalla-juego" class="hidden">
+      <div class="flex justify-between items-center mb-4 text-sm font-semibold text-gray-500">
+        <span id="progreso">Pregunta 1/10</span>
+        <span id="puntos-actuales">Aciertos: 0</span>
+      </div>
+
+      <div class="bg-indigo-50 p-4 rounded-lg mb-4">
+        <p id="enunciado" class="text-lg font-medium text-indigo-900 text-center"></p>
+      </div>
+
+      <div id="opciones" class="space-y-2 mb-4"></div>
+      <div id="feedback" class="text-center font-bold min-h-[24px]"></div>
+    </div>
+
+    <!-- PANTALLA 3: RESULTADOS -->
+    <div id="pantalla-resultado" class="hidden text-center">
+      <h2 class="text-xl font-bold mb-2">¡Actividad Completada!</h2>
+      <p class="text-gray-500 text-sm">Tu calificación final es:</p>
+      <p class="text-4xl font-extrabold text-indigo-600 my-4" id="nota-final">0 / 10</p>
+      <p id="estado-envio" class="text-sm text-gray-500">Enviando nota al profesor...</p>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================
+    // ⚙️ CONFIGURACIÓN DE LA ACTIVIDAD
+    // =========================================================
+    const NOMBRE_ACTIVIDAD = "Ecuaciones de 1º Grado"; // <-- Pon aquí el nombre del tema
+    const URL_DEL_SCRIPT = "https://script.google.com/macros/s/AKfycbyrExczhmQNGDPiazlN9EeqLv37bPZC9dZILHXobtelNRXgDtiFblyl-rzMy2Ok_Qwa/exec"; // <-- Pega aquí tu URL de Google Apps Script
+
+    // BANCO DE 10 PREGUNTAS (Nivel 1º ESO)
+    const preguntas = [
+      {
+        enunciado: "Resuelve la ecuación: x + 5 = 12",
+        opciones: ["x = 5", "x = 7", "x = 17", "x = 6"],
+        correcta: 1
+      },
+      {
+        enunciado: "Resuelve la ecuación: x - 4 = 9",
+        opciones: ["x = 5", "x = 13", "x = 36", "x = -5"],
+        correcta: 1
+      },
+      {
+        enunciado: "Resuelve la ecuación: 3x = 15",
+        opciones: ["x = 12", "x = 45", "x = 5", "x = 3"],
+        correcta: 2
+      },
+      {
+        enunciado: "Resuelve la ecuación: 2x + 1 = 9",
+        opciones: ["x = 4", "x = 5", "x = 8", "x = 3"],
+        correcta: 0
+      },
+      {
+        enunciado: "Resuelve la ecuación: 4x - 6 = 10",
+        opciones: ["x = 1", "x = 2", "x = 4", "x = 16"],
+        correcta: 2
+      },
+      {
+        enunciado: "Resuelve la ecuación: 5x = 2x + 9",
+        opciones: ["x = 3", "x = 7", "x = 9", "x = 18"],
+        correcta: 0
+      },
+      {
+        enunciado: "Resuelve la ecuación: 3x + 2 = x + 10",
+        opciones: ["x = 6", "x = 4", "x = 2", "x = 8"],
+        correcta: 1
+      },
+      {
+        enunciado: "Resuelve la ecuación con paréntesis: 2(x + 3) = 10",
+        opciones: ["x = 2", "x = 5", "x = 1", "x = 4"],
+        correcta: 0
+      },
+      {
+        enunciado: "Si al triple de un número le restas 2 obtienes 13. ¿Cuál es el número?",
+        opciones: ["x = 3", "x = 4", "x = 5", "x = 6"],
+        correcta: 2
+      },
+      {
+        enunciado: "Resuelve la ecuación con números enteros: x + 8 = 3",
+        opciones: ["x = 5", "x = -5", "x = 11", "x = -11"],
+        correcta: 1
+      }
+    ];
+
+    // =========================================================
+    // LÓGICA DE LA APLICACIÓN
+    // =========================================================
+    let indice = 0;
+    let aciertos = 0;
+    let datosAlumno = {};
+
+    document.getElementById('titulo-app').innerText = NOMBRE_ACTIVIDAD;
+
+    function empezar() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const curso = document.getElementById('curso').value;
+
+      if (!nombre) {
+        alert("Por favor, introduce tu nombre y apellidos.");
+        return;
+      }
+      if (!curso) {
+        alert("Por favor, selecciona tu curso.");
+        return;
+      }
+
+      datosAlumno = { nombre, curso };
+      document.getElementById('pantalla-registro').classList.add('hidden');
+      document.getElementById('pantalla-juego').classList.remove('hidden');
+      cargarPregunta();
+    }
+
+    function cargarPregunta() {
+      const p = preguntas[indice];
+      document.getElementById('progreso').innerText = `Pregunta ${indice + 1}/${preguntas.length}`;
+      document.getElementById('enunciado').innerText = p.enunciado;
+      document.getElementById('feedback').innerText = "";
+      
+      const divOpciones = document.getElementById('opciones');
+      divOpciones.innerHTML = "";
+
+      p.opciones.forEach((opc, i) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-3 border rounded-lg hover:bg-indigo-50 transition border-gray-200 font-medium";
+        btn.innerText = opc;
+        btn.onclick = () => responder(i);
+        divOpciones.appendChild(btn);
+      });
+    }
+
+    function responder(seleccion) {
+      const correcta = preguntas[indice].correcta;
+      const feedback = document.getElementById('feedback');
+
+      if (seleccion === correcta) {
+        aciertos++;
+        feedback.innerText = "¡Correcto! 🎉";
+        feedback.className = "text-center font-bold text-green-600";
+      } else {
+        feedback.innerText = "Incorrecto ❌";
+        feedback.className = "text-center font-bold text-red-600";
+      }
+
+      document.getElementById('puntos-actuales').innerText = `Aciertos: ${aciertos}`;
+
+      setTimeout(() => {
+        indice++;
+        if (indice < preguntas.length) {
+          cargarPregunta();
+        } else {
+          finalizar();
+        }
+      }, 1000);
+    }
+
+    function finalizar() {
+      document.getElementById('pantalla-juego').classList.add('hidden');
+      document.getElementById('pantalla-resultado').classList.remove('hidden');
+
+      // Calcular nota sobre 10 (al ser 10 preguntas, cada acierto suma 1 punto)
+      const nota = ((aciertos / preguntas.length) * 10).toFixed(1);
+      document.getElementById('nota-final').innerText = `${nota} / 10`;
+
+      // Envío de datos a Google Sheets
+      fetch(URL_DEL_SCRIPT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: datosAlumno.nombre,
+          curso: datosAlumno.curso,
+          actividad: NOMBRE_ACTIVIDAD,
+          puntuacion: `${nota} (${aciertos}/${preguntas.length})`
+        })
+      }).then(() => {
+        document.getElementById('estado-envio').innerText = "✅ ¡Puntuación registrada con éxito en la hoja del profesor!";
+        document.getElementById('estado-envio').className = "text-sm text-green-600 font-semibold";
+      }).catch(err => {
+        document.getElementById('estado-envio').innerText = "❌ Error al guardar la nota. Avisa a tu profesor.";
+      });
+    }
+  </script>
+</body>
+</html>
+

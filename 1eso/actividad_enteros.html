@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actividad Interactiva: Operaciones con Enteros</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white rounded-xl shadow-lg p-6 max-w-md w-full" id="app">
+    <!-- TÍTULO DINÁMICO DE LA ACTIVIDAD -->
+    <h1 class="text-2xl font-bold text-center text-indigo-600 mb-1" id="titulo-app">Operaciones con Enteros</h1>
+    <p class="text-xs text-center text-gray-400 font-semibold uppercase tracking-wider mb-4">Matemáticas 1º ESO - Preguntas Aleatorias</p>
+
+    <!-- PANTALLA 1: REGISTRO DEL ALUMNO -->
+    <div id="pantalla-registro">
+      <p class="text-gray-600 mb-4 text-sm">Introduce tus datos. Se generará un cuestionario con <strong>10 preguntas únicas y aleatorias</strong>.</p>
+      
+      <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre y Apellidos:</label>
+      <input type="text" id="nombre" placeholder="Ej: Juan Pérez Martínez" class="w-full p-2 border rounded mb-3 focus:outline-indigo-500">
+      
+      <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Curso / Grupo:</label>
+      <select id="curso" class="w-full p-2 border rounded mb-4 focus:outline-indigo-500 bg-white">
+        <option value="">-- Selecciona tu grupo --</option>
+        <option value="1º ESO A">1º ESO A</option>
+        <option value="1º ESO B">1º ESO B</option>
+        <option value="1º ESO C">1º ESO C</option>
+        <option value="1º ESO D">1º ESO D</option>
+        <option value="Otro">Otro</option>
+      </select>
+
+      <button onclick="empezar()" class="w-full bg-indigo-600 text-white py-2.5 rounded font-semibold hover:bg-indigo-700 transition">Generar Examen y Comenzar</button>
+    </div>
+
+    <!-- PANTALLA 2: EJERCICIOS -->
+    <div id="pantalla-juego" class="hidden">
+      <div class="flex justify-between items-center mb-4 text-sm font-semibold text-gray-500">
+        <span id="progreso">Pregunta 1/10</span>
+        <span id="puntos-actuales">Aciertos: 0</span>
+      </div>
+
+      <div class="bg-indigo-50 p-4 rounded-lg mb-4">
+        <p id="enunciado" class="text-xl font-bold text-indigo-900 text-center tracking-wide"></p>
+      </div>
+
+      <div id="opciones" class="space-y-2 mb-4"></div>
+      <div id="feedback" class="text-center font-bold min-h-[24px]"></div>
+    </div>
+
+    <!-- PANTALLA 3: RESULTADOS -->
+    <div id="pantalla-resultado" class="hidden text-center">
+      <h2 class="text-xl font-bold mb-2">¡Actividad Completada!</h2>
+      <p class="text-gray-500 text-sm">Tu calificación final es:</p>
+      <p class="text-4xl font-extrabold text-indigo-600 my-4" id="nota-final">0 / 10</p>
+      <p id="estado-envio" class="text-sm text-gray-500">Enviando nota al profesor...</p>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================
+    // ⚙️ CONFIGURACIÓN DE LA ACTIVIDAD
+    // =========================================================
+    const NOMBRE_ACTIVIDAD = "Operaciones con Enteros (Aleatorio)";
+    const URL_DEL_SCRIPT = "https://script.google.com/macros/s/AKfycbyrExczhmQNGDPiazlN9EeqLv37bPZC9dZILHXobtelNRXgDtiFblyl-rzMy2Ok_Qwa/exec"; // <-- Pega aquí tu URL de Google Apps Script
+
+
+    // FUNCIONES AUXILIARES PARA GENERACIÓN MATEMÁTICA ALEATORIA
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getRandomNonZero(min, max) {
+      let val = 0;
+      while (val === 0) {
+        val = getRandomInt(min, max);
+      }
+      return val;
+    }
+
+    function formatNum(n) {
+      return n >= 0 ? `(+${n})` : `(${n})`;
+    }
+
+    // Genera 4 opciones únicas incluyendo la respuesta correcta
+    function makeOptions(correctVal, distractorGenerators) {
+      let set = new Set();
+      set.add(correctVal);
+
+      for (let g of distractorGenerators) {
+        if (set.size < 4 && !isNaN(g) && g !== correctVal) {
+          set.add(g);
+        }
+      }
+
+      let offsets = [1, -1, 2, -2, 3, -3, 5, -5, 10, -10];
+      for (let off of offsets) {
+        if (set.size >= 4) break;
+        let cand = correctVal + off;
+        if (!set.has(cand)) set.add(cand);
+      }
+
+      let arr = Array.from(set);
+      // Mezclar array
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+
+      let correctIndex = arr.indexOf(correctVal);
+      return {
+        opciones: arr.map(v => v.toString()),
+        correcta: correctIndex
+      };
+    }
+
+    // GENERADOR DE 10 PREGUNTAS ALEATORIAS
+    function generarPreguntas() {
+      let list = [];
+
+      // 1. Suma de dos enteros
+      {
+        let a = getRandomNonZero(-12, 12);
+        let b = getRandomNonZero(-12, 12);
+        let ans = a + b;
+        let opts = makeOptions(ans, [-ans, a - b, b - a, ans + 2]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} + ${formatNum(b)}`,
+          ...opts
+        });
+      }
+
+      // 2. Resta de dos enteros
+      {
+        let a = getRandomNonZero(-15, 15);
+        let b = getRandomNonZero(-15, 15);
+        let ans = a - b;
+        let opts = makeOptions(ans, [-ans, a + b, b - a, ans - 2]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} - ${formatNum(b)}`,
+          ...opts
+        });
+      }
+
+      // 3. Cadena de suma/resta de 3 enteros
+      {
+        let a = getRandomNonZero(-10, 10);
+        let b = getRandomNonZero(-10, 10);
+        let c = getRandomNonZero(-10, 10);
+        let ans = a - b + c;
+        let opts = makeOptions(ans, [-ans, a + b + c, a - b - c, ans + 3]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} - ${formatNum(b)} + ${formatNum(c)}`,
+          ...opts
+        });
+      }
+
+      // 4. Multiplicación de dos enteros
+      {
+        let a = getRandomNonZero(-9, 9);
+        let b = getRandomNonZero(-9, 9);
+        let ans = a * b;
+        let opts = makeOptions(ans, [-ans, a + b, ans + a, -ans + 2]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} · ${formatNum(b)}`,
+          ...opts
+        });
+      }
+
+      // 5. División exacta de dos enteros
+      {
+        let b = getRandomInt(2, 9) * (Math.random() < 0.5 ? 1 : -1);
+        let ans = getRandomNonZero(-9, 9);
+        let a = b * ans;
+        let opts = makeOptions(ans, [-ans, a - b, a + b, ans * 2]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} : ${formatNum(b)}`,
+          ...opts
+        });
+      }
+
+      // 6. Multiplicación de tres factores
+      {
+        let a = getRandomNonZero(-5, 5);
+        let b = getRandomNonZero(-4, 4);
+        let c = getRandomNonZero(-4, 4);
+        let ans = a * b * c;
+        let opts = makeOptions(ans, [-ans, a + b + c, ans / a, ans + 4]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} · ${formatNum(b)} · ${formatNum(c)}`,
+          ...opts
+        });
+      }
+
+      // 7. Combinada 1: a + b · c (Prioridad)
+      {
+        let a = getRandomNonZero(-10, 10);
+        let b = getRandomNonZero(-6, 6);
+        let c = getRandomNonZero(-6, 6);
+        let ans = a + (b * c);
+        let wrongPriority = (a + b) * c;
+        let opts = makeOptions(ans, [wrongPriority, -ans, a - b * c, ans + 2]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} + ${formatNum(b)} · ${formatNum(c)}`,
+          ...opts
+        });
+      }
+
+      // 8. Combinada 2: a · b - c : d
+      {
+        let d = getRandomInt(2, 5) * (Math.random() < 0.5 ? 1 : -1);
+        let divAns = getRandomNonZero(-5, 5);
+        let c = d * divAns;
+        let a = getRandomNonZero(-5, 5);
+        let b = getRandomNonZero(-5, 5);
+        let ans = (a * b) - divAns;
+        let opts = makeOptions(ans, [-ans, (a * b) + divAns, a * b * divAns, ans + 3]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} · ${formatNum(b)} - ${formatNum(c)} : ${formatNum(d)}`,
+          ...opts
+        });
+      }
+
+      // 9. Combinada con Paréntesis: [a + b] · c
+      {
+        let a = getRandomNonZero(-8, 8);
+        let b = getRandomNonZero(-8, 8);
+        let c = getRandomNonZero(-5, 5);
+        let ans = (a + b) * c;
+        let wrongPriority = a + (b * c);
+        let opts = makeOptions(ans, [wrongPriority, -ans, ans - 5, ans + 5]);
+        list.push({
+          enunciado: `Calcula: [${formatNum(a)} + ${formatNum(b)}] · ${formatNum(c)}`,
+          ...opts
+        });
+      }
+
+      // 10. Operación con signo y corchete: a - [b - c · d]
+      {
+        let c = getRandomNonZero(-4, 4);
+        let d = getRandomNonZero(-4, 4);
+        let cd = c * d;
+        let b = getRandomNonZero(-8, 8);
+        let inside = b - cd;
+        let a = getRandomNonZero(-10, 10);
+        let ans = a - inside;
+        let opts = makeOptions(ans, [-ans, a + inside, a - b - cd, ans + 2]);
+        list.push({
+          enunciado: `Calcula: ${formatNum(a)} - [${formatNum(b)} - ${formatNum(c)} · ${formatNum(d)}]`,
+          ...opts
+        });
+      }
+
+      return list;
+    }
+
+    // VARIABLES DE ESTADO
+    let preguntas = [];
+    let indice = 0;
+    let aciertos = 0;
+    let datosAlumno = {};
+
+    function empezar() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const curso = document.getElementById('curso').value;
+
+      if (!nombre) {
+        alert("Por favor, introduce tu nombre y apellidos.");
+        return;
+      }
+      if (!curso) {
+        alert("Por favor, selecciona tu curso.");
+        return;
+      }
+
+      datosAlumno = { nombre, curso };
+      preguntas = generarPreguntas(); // Se generan preguntas aleatorias únicas
+
+      document.getElementById('pantalla-registro').classList.add('hidden');
+      document.getElementById('pantalla-juego').classList.remove('hidden');
+      cargarPregunta();
+    }
+
+    function cargarPregunta() {
+      const p = preguntas[indice];
+      document.getElementById('progreso').innerText = `Pregunta ${indice + 1}/${preguntas.length}`;
+      document.getElementById('enunciado').innerText = p.enunciado;
+      document.getElementById('feedback').innerText = "";
+      
+      const divOpciones = document.getElementById('opciones');
+      divOpciones.innerHTML = "";
+
+      p.opciones.forEach((opc, i) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-3 border rounded-lg hover:bg-indigo-50 transition border-gray-200 font-semibold text-gray-700";
+        btn.innerText = opc;
+        btn.onclick = () => responder(i);
+        divOpciones.appendChild(btn);
+      });
+    }
+
+    function responder(seleccion) {
+      const correcta = preguntas[indice].correcta;
+      const feedback = document.getElementById('feedback');
+
+      if (seleccion === correcta) {
+        aciertos++;
+        feedback.innerText = "¡Correcto! 🎉";
+        feedback.className = "text-center font-bold text-green-600";
+      } else {
+        const respuestaCorrecta = preguntas[indice].opciones[correcta];
+        feedback.innerText = `Incorrecto ❌ (La respuesta era ${respuestaCorrecta})`;
+        feedback.className = "text-center font-bold text-red-600";
+      }
+
+      document.getElementById('puntos-actuales').innerText = `Aciertos: ${aciertos}`;
+
+      setTimeout(() => {
+        indice++;
+        if (indice < preguntas.length) {
+          cargarPregunta();
+        } else {
+          finalizar();
+        }
+      }, 1400);
+    }
+
+    function finalizar() {
+      document.getElementById('pantalla-juego').classList.add('hidden');
+      document.getElementById('pantalla-resultado').classList.remove('hidden');
+
+      const nota = ((aciertos / preguntas.length) * 10).toFixed(1);
+      document.getElementById('nota-final').innerText = `${nota} / 10`;
+
+      // Envío de datos a Google Sheets
+      fetch(URL_DEL_SCRIPT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: datosAlumno.nombre,
+          curso: datosAlumno.curso,
+          actividad: NOMBRE_ACTIVIDAD,
+          puntuacion: `${nota} (${aciertos}/${preguntas.length})`
+        })
+      }).then(() => {
+        document.getElementById('estado-envio').innerText = "✅ ¡Puntuación registrada con éxito en la hoja del profesor!";
+        document.getElementById('estado-envio').className = "text-sm text-green-600 font-semibold";
+      }).catch(err => {
+        document.getElementById('estado-envio').innerText = "❌ Error al guardar la nota. Avisa a tu profesor.";
+      });
+    }
+  </script>
+</body>
+</html>

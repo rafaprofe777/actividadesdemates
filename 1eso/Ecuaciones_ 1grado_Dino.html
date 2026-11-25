@@ -1,0 +1,363 @@
+
+
+    
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dino-Math: Carrera de Enteros</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ANIMACIONES DEL JUEGO */
+    @keyframes jumpOver {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-42px); }
+      100% { transform: translateY(0); }
+    }
+    .animate-jump {
+      animation: jumpOver 0.8s ease-in-out;
+    }
+
+    @keyframes hitEffect {
+      0%, 100% { opacity: 1; }
+      20%, 60% { opacity: 0.2; filter: drop-shadow(0 0 4px red); }
+    }
+    .animate-hit {
+      animation: hitEffect 0.8s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden" id="app">
+    
+    <!-- CABECERA -->
+    <div class="p-5 pb-2">
+      <h1 class="text-2xl font-bold text-center text-indigo-600 mb-1" id="titulo-app">Dino-Math: Carrera de Enteros</h1>
+      <p class="text-xs text-center text-gray-400 font-semibold uppercase tracking-wider mb-1">Matemáticas 1º ESO</p>
+    </div>
+
+    <!-- PANTALLA 1: REGISTRO DEL ALUMNO -->
+    <div id="pantalla-registro" class="p-6 pt-2">
+      <p class="text-gray-600 mb-4 text-sm">Supera los <strong>10 cactus</strong> respondiendo correctamente a las operaciones para llegar a la meta 🏁.</p>
+      
+      <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre y Apellidos:</label>
+      <input type="text" id="nombre" placeholder="Ej: Lucía Martínez Gómez" class="w-full p-2 border rounded mb-3 focus:outline-indigo-500">
+      
+      <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Curso / Grupo:</label>
+      <select id="curso" class="w-full p-2 border rounded mb-4 focus:outline-indigo-500 bg-white">
+        <option value="">-- Selecciona tu grupo --</option>
+        <option value="1º ESO A">1º ESO A</option>
+        <option value="1º ESO B">1º ESO B</option>
+        <option value="1º ESO C">1º ESO C</option>
+        <option value="1º ESO D">1º ESO D</option>
+        <option value="Otro">Otro</option>
+      </select>
+
+      <button onclick="empezar()" class="w-full bg-indigo-600 text-white py-2.5 rounded font-semibold hover:bg-indigo-700 transition">Iniciar Carrera 🦖</button>
+    </div>
+
+    <!-- PANTALLA 2: EJERCICIOS Y PISTA DE CARRERA -->
+    <div id="pantalla-juego" class="hidden">
+      
+      <!-- ESCENARIO COMPLETO: 10 CACTUS + META -->
+      <div class="relative w-full h-28 bg-slate-50 border-y border-slate-200 overflow-hidden mb-4">
+        <!-- Nubes -->
+        <div class="absolute top-2 left-4 text-gray-300 text-xs">☁️</div>
+        <div class="absolute top-3 left-1/2 text-gray-300 text-xs">☁️</div>
+        <div class="absolute top-1 right-8 text-gray-300 text-xs">☁️</div>
+        
+        <!-- Suelo -->
+        <div class="absolute bottom-2 left-0 w-full border-b-2 border-slate-400"></div>
+
+        <!-- CONTENEDOR DINÁMICO DE CACTUS Y META -->
+        <div id="pista-elementos" class="absolute inset-0"></div>
+
+        <!-- DINOSAURIO -->
+        <div id="dino" class="absolute bottom-2 left-[2%] w-7 h-7 text-gray-800 z-20 transition-all duration-700 ease-in-out">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">
+            <path d="M22,2h-2v2h-2v2h-2v2h-2V6h-2V4h-2V2H6v2H4v2H2v6h2v2h2v2h2v2h2v2h2v-2h2v-2h2v-2h2v-2h2v-2h2v-4h2V4h-2V2z M10,6h2v2h-2V6z"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- PANEL DE PREGUNTAS -->
+      <div class="px-6 pb-6">
+        <div class="flex justify-between items-center mb-3 text-sm font-semibold text-gray-500">
+          <span id="progreso">Pregunta 1/10</span>
+          <span id="puntos-actuales">Aciertos: 0</span>
+        </div>
+
+        <div class="bg-indigo-50 p-4 rounded-lg mb-4">
+          <p id="enunciado" class="text-xl font-bold text-indigo-900 text-center tracking-wide"></p>
+        </div>
+
+        <div id="opciones" class="space-y-2 mb-4"></div>
+        <div id="feedback" class="text-center font-bold min-h-[24px]"></div>
+      </div>
+    </div>
+
+    <!-- PANTALLA 3: RESULTADOS -->
+    <div id="pantalla-resultado" class="hidden text-center p-6">
+      <div class="text-5xl mb-2">🏁</div>
+      <h2 class="text-xl font-bold mb-2">¡Llegaste a la Meta!</h2>
+      <p class="text-gray-500 text-sm">Tu calificación final es:</p>
+      <p class="text-4xl font-extrabold text-indigo-600 my-4" id="nota-final">0 / 10</p>
+      <p id="estado-envio" class="text-sm text-gray-500">Enviando nota al profesor...</p>
+    </div>
+
+  </div>
+
+  <script>
+    // =========================================================
+    // ⚙️ CONFIGURACIÓN DE LA ACTIVIDAD
+    // =========================================================
+    const NOMBRE_ACTIVIDAD = "Dino-Math: Carrera de Enteros";
+    const URL_DEL_SCRIPT = "https://script.google.com/macros/s/AKfycbyrExczhmQNGDPiazlN9EeqLv37bPZC9dZILHXobtelNRXgDtiFblyl-rzMy2Ok_Qwa/exec"; // <-- Pega aquí tu URL de Google Apps Script
+
+    // POSICIONES PORCENTUALES DE LOS 10 CACTUS Y LA META EN LA PISTA
+    const posCacti = [10, 18, 26, 34, 42, 50, 58, 66, 74, 82]; // % para los 10 cactus
+    const posMeta = 90; // % para la bandera de meta
+
+    // GENERACIÓN DE MATEMÁTICAS ALEATORIAS
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getRandomNonZero(min, max) {
+      let val = 0;
+      while (val === 0) val = getRandomInt(min, max);
+      return val;
+    }
+
+    function formatNum(n) {
+      return n >= 0 ? `(+${n})` : `(${n})`;
+    }
+
+    function makeOptions(correctVal, distractorGenerators) {
+      let set = new Set();
+      set.add(correctVal);
+
+      for (let g of distractorGenerators) {
+        if (set.size < 4 && !isNaN(g) && g !== correctVal) set.add(g);
+      }
+
+      let offsets = [1, -1, 2, -2, 3, -3, 5, -5];
+      for (let off of offsets) {
+        if (set.size >= 4) break;
+        let cand = correctVal + off;
+        if (!set.has(cand)) set.add(cand);
+      }
+
+      let arr = Array.from(set);
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+
+      return {
+        opciones: arr.map(v => v.toString()),
+        correcta: arr.indexOf(correctVal)
+      };
+    }
+
+    function generarPreguntas() {
+      let list = [];
+      let a, b, c, d, ans, divAns;
+
+      // 1. Suma
+      a = getRandomNonZero(-12, 12); b = getRandomNonZero(-12, 12);
+      list.push({ enunciado: `Calcula: ${formatNum(a)} + ${formatNum(b)}`, ...makeOptions(a + b, [a - b, -a - b]) });
+
+      // 2. Resta
+      a = getRandomNonZero(-15, 15); b = getRandomNonZero(-15, 15);
+      list.push({ enunciado: `Calcula: ${formatNum(a)} - ${formatNum(b)}`, ...makeOptions(a - b, [a + b, -a + b]) });
+
+      // 3. Cadena de 3
+      a = getRandomNonZero(-10, 10); b = getRandomNonZero(-10, 10); c = getRandomNonZero(-10, 10);
+      list.push({ enunciado: `Calcula: ${formatNum(a)} - ${formatNum(b)} + ${formatNum(c)}`, ...makeOptions(a - b + c, [a + b + c, a - b - c]) });
+
+      // 4. Multiplicación
+      a = getRandomNonZero(-9, 9); b = getRandomNonZero(-9, 9);
+      list.push({ enunciado: `Calcula: ${formatNum(a)} · ${formatNum(b)}`, ...makeOptions(a * b, [-a * b, a + b]) });
+
+      // 5. División
+      b = getRandomInt(2, 8) * (Math.random() < 0.5 ? 1 : -1);
+      ans = getRandomNonZero(-8, 8); a = b * ans;
+      list.push({ enunciado: `Calcula: ${formatNum(a)} : ${formatNum(b)}`, ...makeOptions(ans, [-ans, a - b]) });
+
+      // 6. Multiplicación triple
+      a = getRandomNonZero(-4, 4); b = getRandomNonZero(-4, 4); c = getRandomNonZero(-4, 4);
+      list.push({ enunciado: `Calcula: ${formatNum(a)} · ${formatNum(b)} · ${formatNum(c)}`, ...makeOptions(a * b * c, [-a * b * c]) });
+
+      // 7. Combinada: a + b · c
+      a = getRandomNonZero(-8, 8); b = getRandomNonZero(-5, 5); c = getRandomNonZero(-5, 5);
+      list.push({ enunciado: `Calcula: ${formatNum(a)} + ${formatNum(b)} · ${formatNum(c)}`, ...makeOptions(a + (b * c), [(a + b) * c, a - b * c]) });
+
+      // 8. Combinada: a · b - c : d
+      d = getRandomInt(2, 4) * (Math.random() < 0.5 ? 1 : -1);
+      divAns = getRandomNonZero(-4, 4); c = d * divAns; a = getRandomNonZero(-4, 4); b = getRandomNonZero(-4, 4);
+      list.push({ enunciado: `Calcula: ${formatNum(a)} · ${formatNum(b)} - ${formatNum(c)} : ${formatNum(d)}`, ...makeOptions((a * b) - divAns, [(a * b) + divAns]) });
+
+      // 9. Paréntesis: [a + b] · c
+      a = getRandomNonZero(-6, 6); b = getRandomNonZero(-6, 6); c = getRandomNonZero(-4, 4);
+      list.push({ enunciado: `Calcula: [${formatNum(a)} + ${formatNum(b)}] · ${formatNum(c)}`, ...makeOptions((a + b) * c, [a + (b * c)]) });
+
+      // 10. Corchetes avanzados
+      c = getRandomNonZero(-3, 3); d = getRandomNonZero(-3, 3);
+      b = getRandomNonZero(-6, 6); a = getRandomNonZero(-8, 8);
+      list.push({ enunciado: `Calcula: ${formatNum(a)} - [${formatNum(b)} - ${formatNum(c)} · ${formatNum(d)}]`, ...makeOptions(a - (b - (c * d)), [a - b - c * d]) });
+
+      return list;
+    }
+
+    // VARIABLES DE ESTADO
+    let preguntas = [];
+    let indice = 0;
+    let aciertos = 0;
+    let datosAlumno = {};
+
+    // DIBUJAR PISTA CON LOS 10 CACTUS Y LA META AL INICIO
+    function renderizarPista() {
+      const pista = document.getElementById('pista-elementos');
+      pista.innerHTML = "";
+
+      // Colocar los 10 Cactus
+      posCacti.forEach((pos, i) => {
+        const cactusDiv = document.createElement('div');
+        cactusDiv.id = `cactus-${i}`;
+        cactusDiv.className = "absolute bottom-2 w-4 h-6 text-green-600 transition-colors duration-300";
+        cactusDiv.style.left = `${pos}%`;
+        cactusDiv.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">
+            <path d="M10 2h4v20h-4V2zm-4 6h3v10H6V8zm-2 2h2v2H4v-2zm11-4h3v10h-3V6zm3 2h2v2h-2V8z"/>
+          </svg>`;
+        pista.appendChild(cactusDiv);
+      });
+
+      // Colocar la Meta (Línea + Bandera 🏁)
+      const metaDiv = document.createElement('div');
+      metaDiv.className = "absolute bottom-2 text-lg z-10";
+      metaDiv.style.left = `${posMeta}%`;
+      metaDiv.innerHTML = "🏁";
+      pista.appendChild(metaDiv);
+    }
+
+    function empezar() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const curso = document.getElementById('curso').value;
+
+      if (!nombre || !curso) {
+        alert("Por favor, rellena tu nombre y selecciona un curso.");
+        return;
+      }
+
+      datosAlumno = { nombre, curso };
+      preguntas = generarPreguntas();
+
+      renderizarPista();
+
+      document.getElementById('pantalla-registro').classList.add('hidden');
+      document.getElementById('pantalla-juego').classList.remove('hidden');
+      cargarPregunta();
+    }
+
+    function cargarPregunta() {
+      const p = preguntas[indice];
+      document.getElementById('progreso').innerText = `Pregunta ${indice + 1}/${preguntas.length}`;
+      document.getElementById('enunciado').innerText = p.enunciado;
+      document.getElementById('feedback').innerText = "";
+      
+      const divOpciones = document.getElementById('opciones');
+      divOpciones.innerHTML = "";
+
+      p.opciones.forEach((opc, i) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-3 border rounded-lg hover:bg-indigo-50 transition border-gray-200 font-semibold text-gray-700";
+        btn.innerText = opc;
+        btn.onclick = () => responder(i);
+        divOpciones.appendChild(btn);
+      });
+    }
+
+    function responder(seleccion) {
+      const correcta = preguntas[indice].correcta;
+      const feedback = document.getElementById('feedback');
+      const esCorrecto = (seleccion === correcta);
+
+      const dino = document.getElementById('dino');
+      const cactusActual = document.getElementById(`cactus-${indice}`);
+
+      // Posición destino (justo después del cactus actual)
+      const posDestino = posCacti[indice] + 3.5;
+
+      // Reiniciar clases de animación
+      dino.classList.remove('animate-jump', 'animate-hit');
+      void dino.offsetWidth;
+
+      // Mover horizontalmente al dinosaurio
+      dino.style.left = `${posDestino}%`;
+
+      if (esCorrecto) {
+        aciertos++;
+        dino.classList.add('animate-jump');
+        if (cactusActual) {
+          cactusActual.classList.remove('text-green-600');
+          cactusActual.classList.add('text-slate-300'); // Cactus superado se vuelve gris
+        }
+        feedback.innerText = "¡Correcto! 🦖 ¡Cactus superado!";
+        feedback.className = "text-center font-bold text-green-600";
+      } else {
+        dino.classList.add('animate-hit');
+        if (cactusActual) {
+          cactusActual.classList.remove('text-green-600');
+          cactusActual.classList.add('text-red-500'); // Cactus con choque se vuelve rojo
+        }
+        const respuestaCorrecta = preguntas[indice].opciones[correcta];
+        feedback.innerText = `¡Chocaste! 💥 (Respuesta: ${respuestaCorrecta})`;
+        feedback.className = "text-center font-bold text-red-600";
+      }
+
+      document.getElementById('puntos-actuales').innerText = `Aciertos: ${aciertos}`;
+
+      setTimeout(() => {
+        indice++;
+        if (indice < preguntas.length) {
+          cargarPregunta();
+        } else {
+          // Avance final hasta cruzar la Meta
+          dino.style.left = `${posMeta + 1}%`;
+          setTimeout(finalizar, 800);
+        }
+      }, 1400);
+    }
+
+    function finalizar() {
+      document.getElementById('pantalla-juego').classList.add('hidden');
+      document.getElementById('pantalla-resultado').classList.remove('hidden');
+
+      const nota = ((aciertos / preguntas.length) * 10).toFixed(1);
+      document.getElementById('nota-final').innerText = `${nota} / 10`;
+
+      // Envío de datos a Google Sheets
+      fetch(URL_DEL_SCRIPT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: datosAlumno.nombre,
+          curso: datosAlumno.curso,
+          actividad: NOMBRE_ACTIVIDAD,
+          puntuacion: `${nota} (${aciertos}/${preguntas.length})`
+        })
+      }).then(() => {
+        document.getElementById('estado-envio').innerText = "✅ ¡Puntuación registrada con éxito en la hoja del profesor!";
+        document.getElementById('estado-envio').className = "text-sm text-green-600 font-semibold";
+      }).catch(err => {
+        document.getElementById('estado-envio').innerText = "❌ Error al guardar la nota. Avisa a tu profesor.";
+      });
+    }
+  </script>
+</body>
+</html>

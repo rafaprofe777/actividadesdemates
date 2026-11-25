@@ -24,23 +24,23 @@
         </a>
       </div>
 
-      <!-- LÍNEA 2: MENÚ DE NAVEGACIÓN (CON INICIO Y 1º ESO DESTACADO) -->
+      <!-- LÍNEA 2: MENÚ DE NAVEGACIÓN -->
       <div class="py-2.5 overflow-x-auto scrollbar-none flex justify-start md:justify-center">
         <nav class="w-auto">
           <ul class="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-semibold whitespace-nowrap">
             <li><a href="index.html" class="px-3 py-2 rounded-lg bg-amber-500 text-slate-900 hover:bg-amber-400 transition font-bold flex items-center gap-1">🏠 Inicio</a></li>
             <li class="h-5 w-[1px] bg-slate-700 mx-1"></li>
             <li><a href="1eso.html" class="px-3 py-2 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40 transition">1º ESO</a></li>
-            <li><a href="index.html#2eso" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">2º ESO</a></li>
-            <li><a href="index.html#3eso" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">3º ESO</a></li>
-            <li><a href="index.html#4eso" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">4º ESO</a></li>
+            <li><a href="2eso.html" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">2º ESO</a></li>
+            <li><a href="3eso.html" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">3º ESO</a></li>
+            <li><a href="4eso.html" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">4º ESO</a></li>
             <li class="h-5 w-[1px] bg-slate-700 mx-1"></li>
-            <li><a href="index.html#1bch-ciencias" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">1º Bch Ciencias</a></li>
-            <li><a href="index.html#1bch-sociales" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">1º Bch Sociales</a></li>
-            <li><a href="index.html#1bch-generales" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">1º Generales</a></li>
+            <li><a href="1bchCC.html" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">1º Bch Ciencias</a></li>
+            <li><a href="1bchSS.html" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">1º Bch Sociales</a></li>
+            <li><a href="1bchGen.html" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">1º Generales</a></li>
             <li class="h-5 w-[1px] bg-slate-700 mx-1"></li>
-            <li><a href="index.html#2bch-ciencias" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">2º Bch Ciencias</a></li>
-            <li><a href="index.html#2bch-sociales" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">2º Bch Sociales</a></li>
+            <li><a href="2bchCC.html" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">2º Bch Ciencias</a></li>
+            <li><a href="1bchSS.html" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-amber-500 hover:text-slate-900 transition">2º Bch Sociales</a></li>
           </ul>
         </nav>
       </div>
@@ -59,224 +59,41 @@
           <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-md border border-amber-200">
             Educación Secundaria
           </span>
-          <span class="text-xs text-slate-400 font-semibold">• Evaluación Continua</span>
+          <span class="text-xs text-slate-400 font-semibold">• Carpeta: /1eso</span>
         </div>
         <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900">
           Matemáticas 1º de la ESO 🎒
         </h1>
         <p class="text-slate-600 mt-2 text-sm md:text-base max-w-2xl">
-          Explora los bloques temáticos y realiza las actividades interactivas. Todas las puntuaciones obtenidas se enviarán automáticamente al registro de notas.
+          Selecciona cualquiera de las actividades disponibles. Al finalizar, tu nota quedará registrada automáticamente.
         </p>
       </div>
       
-      <!-- Medalla / Contador -->
+      <!-- Contador dinámico de actividades -->
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-center min-w-[180px] flex-shrink-0">
-        <span class="text-3xl">🧩</span>
-        <div class="font-extrabold text-2xl text-slate-800 mt-1">5 Bloques</div>
-        <div class="text-xs text-slate-500 font-medium">Actividades listas</div>
+        <span class="text-3xl">🦖</span>
+        <div id="contador-actividades" class="font-extrabold text-2xl text-slate-800 mt-1">...</div>
+        <div class="text-xs text-slate-500 font-medium">Actividades disponibles</div>
       </div>
     </div>
 
-    <!-- ACCESOS RÁPIDOS POR BLOQUE -->
-    <div class="flex flex-wrap gap-2 mb-8">
-      <a href="#bloque-numeros" class="bg-white hover:bg-amber-50 border border-slate-200 text-slate-700 hover:border-amber-400 text-xs font-bold px-3 py-2 rounded-lg transition">🔢 1. Números Enteros y Decimales</a>
-      <a href="#bloque-fracciones" class="bg-white hover:bg-amber-50 border border-slate-200 text-slate-700 hover:border-amber-400 text-xs font-bold px-3 py-2 rounded-lg transition">🍕 2. Fracciones y Porcentajes</a>
-      <a href="#bloque-algebra" class="bg-white hover:bg-amber-50 border border-slate-200 text-slate-700 hover:border-amber-400 text-xs font-bold px-3 py-2 rounded-lg transition">✏️ 3. Álgebra y Ecuaciones</a>
-      <a href="#bloque-geometria" class="bg-white hover:bg-amber-50 border border-slate-200 text-slate-700 hover:border-amber-400 text-xs font-bold px-3 py-2 rounded-lg transition">📐 4. Geometría Plana</a>
-      <a href="#bloque-estadistica" class="bg-white hover:bg-amber-50 border border-slate-200 text-slate-700 hover:border-amber-400 text-xs font-bold px-3 py-2 rounded-lg transition">📊 5. Estadística y Probabilidad</a>
-    </div>
-
     <!-- ========================================== -->
-    <!-- 3. BLOQUES DE ACTIVIDADES                   -->
+    <!-- 3. CONTENEDOR DINÁMICO DE BOTONES           -->
     <!-- ========================================== -->
-
-    <!-- BLOQUE 1: NÚMEROS ENTEROS Y OPERACIONES -->
-    <section id="bloque-numeros" class="mb-10">
-      <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-200 pb-2">
-        <span>🔢</span> Bloque 1: Números Enteros y Operaciones
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        
-        <!-- Tarjeta 1 (Juego del Dino) -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">🦖</span>
-              <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">Fácil</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Reto Dino: Operaciones Combinadas</h3>
-            <p class="text-xs text-slate-500 mt-1">Suma, resta y multiplicación de números enteros con jerarquía de operaciones.</p>
-          </div>
-          <a href="dino-math.html" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
-        </div>
-
-        <!-- Tarjeta 2 -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">➕</span>
-              <span class="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded">Medio</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Cálculo Mental con Enteros</h3>
-            <p class="text-xs text-slate-500 mt-1">Práctica rápida de regla de signos (- y - es +) y paréntesis.</p>
-          </div>
-          <a href="#" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
-        </div>
-
-        <!-- Tarjeta 3 -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">🔢</span>
-              <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">Fácil</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Divisibilidad y MCD / mcm</h3>
-            <p class="text-xs text-slate-500 mt-1">Criterios de divisibilidad, descomposión en factores primos y problemas.</p>
-          </div>
-          <a href="#" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
-        </div>
-
+    <section>
+      <div class="flex items-center justify-between mb-4 border-b border-slate-200 pb-2">
+        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <span>📂</span> Listado de Actividades (<code>/1eso</code>)
+        </h2>
+        <span id="estado-carga" class="text-xs text-slate-500 font-medium">Cargando ficheros...</span>
       </div>
-    </section>
 
-    <!-- BLOQUE 2: FRACCIONES Y PORCENTAJES -->
-    <section id="bloque-fracciones" class="mb-10">
-      <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-200 pb-2">
-        <span>🍕</span> Bloque 2: Fracciones, Decimales y Porcentajes
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        
-        <!-- Tarjeta 1 -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">🍰</span>
-              <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">Fácil</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Fracciones Equivalentes y Simplificación</h3>
-            <p class="text-xs text-slate-500 mt-1">Identifica fracciones equivalentes y reduce a la fracción irreducible.</p>
-          </div>
-          <a href="#" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
+      <!-- Aquí se insertarán automáticamente los botones de cada fichero .html -->
+      <div id="lista-botones" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Placeholder de carga -->
+        <div class="col-span-full text-center py-12 text-slate-400">
+          Buscando actividades en la carpeta <strong>1eso</strong>...
         </div>
-
-        <!-- Tarjeta 2 -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">🛒</span>
-              <span class="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded">Medio</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Porcentajes y Descuentos del Día a Día</h3>
-            <p class="text-xs text-slate-500 mt-1">Cálculo de aumentos, rebajas y regla de tres simple aplicada a compras.</p>
-          </div>
-          <a href="#" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- BLOQUE 3: ÁLGEBRA Y ECUACIONES -->
-    <section id="bloque-algebra" class="mb-10">
-      <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-200 pb-2">
-        <span>✏️</span> Bloque 3: Lenguaje Algebraico y Ecuaciones
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        
-        <!-- Tarjeta 1 -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">🔤</span>
-              <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">Fácil</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Traducción a Lenguaje Algebraico</h3>
-            <p class="text-xs text-slate-500 mt-1">Pasa frases sencillas ("el doble de un número más 3") a expresiones con x.</p>
-          </div>
-          <a href="#" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
-        </div>
-
-        <!-- Tarjeta 2 -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">⚖️</span>
-              <span class="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded">Medio</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Ecuaciones Primer Grado Sencillas</h3>
-            <p class="text-xs text-slate-500 mt-1">Resolución paso a paso de ecuaciones tipo ax + b = c y con paréntesis.</p>
-          </div>
-          <a href="#" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- BLOQUE 4: GEOMETRÍA PLANA -->
-    <section id="bloque-geometria" class="mb-10">
-      <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-200 pb-2">
-        <span>📐</span> Bloque 4: Geometría Plana y Áreas
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        
-        <!-- Tarjeta 1 -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">🔴</span>
-              <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">Fácil</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Perímetros y Áreas de Polígonos</h3>
-            <p class="text-xs text-slate-500 mt-1">Triángulos, rectángulos, trapecios y círculos. Fórmulas aplicadas.</p>
-          </div>
-          <a href="#" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- BLOQUE 5: ESTADÍSTICA -->
-    <section id="bloque-estadistica" class="mb-10">
-      <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-200 pb-2">
-        <span>📊</span> Bloque 5: Estadística y Probabilidad
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        
-        <!-- Tarjeta 1 -->
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-3xl">📈</span>
-              <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">Fácil</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-base">Media, Moda y Tablas de Frecuencia</h3>
-            <p class="text-xs text-slate-500 mt-1">Interpretación de gráficos de barras y cálculo de parámetros estadísticos básicos.</p>
-          </div>
-          <a href="#" class="mt-4 block text-center bg-slate-900 hover:bg-amber-500 hover:text-slate-900 text-white text-xs font-bold py-2 rounded-lg transition">
-            Iniciar Actividad &rarr;
-          </a>
-        </div>
-
       </div>
     </section>
 
@@ -288,6 +105,111 @@
   <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-6 text-center text-xs">
     <p>© RAFAPROFE777 • 1º de ESO • Registros integrados en Google Sheets / Excel</p>
   </footer>
+
+  <!-- ========================================== -->
+  <!-- 5. SCRIPT DE LECTURA AUTOMÁTICA DE CARPETA  -->
+  <!-- ========================================== -->
+  <script>
+    const CARPETA = "1eso";
+
+    // Respaldo manual por si abres el HTML en local en tu ordenador (sin subirlo a GitHub aún)
+    const RESPALDO_LOCAL = [
+      "actividad_enteros.html",
+      "ecuaciones_1grado.html"
+    ];
+
+    // Convierte "actividad_enteros.html" en "Actividad Enteros" para el título bonito,
+    // aunque también mostraremos el nombre exacto del fichero HTML.
+    function formatearTitulo(nombreArchivo) {
+      return nombreArchivo
+        .replace(/\.html$/i, "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    function renderizarBotones(archivosHtml, origen) {
+      const contenedor = document.getElementById("lista-botones");
+      const contador = document.getElementById("contador-actividades");
+      const estado = document.getElementById("estado-carga");
+
+      contenedor.innerHTML = "";
+      contador.innerText = archivosHtml.length;
+      estado.innerText = origen;
+
+      if (archivosHtml.length === 0) {
+        contenedor.innerHTML = `
+          <div class="col-span-full bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-500">
+            No se encontraron archivos <code>.html</code> dentro de la carpeta <strong>${CARPETA}/</strong>.
+          </div>`;
+        return;
+      }
+
+      archivosHtml.forEach((nombreFichero, index) => {
+        const tituloLimpio = formatearTitulo(nombreFichero);
+        const ruta = `${CARPETA}/${nombreFichero}`;
+
+        const botonCard = document.createElement("a");
+        botonCard.href = ruta;
+        botonCard.className = "group bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between";
+        
+        botonCard.innerHTML = `
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="bg-amber-100 text-amber-800 text-xs font-extrabold px-2.5 py-1 rounded-md">
+                Actividad #${index + 1}
+              </span>
+              <span class="text-xs font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+                ${nombreFichero}
+              </span>
+            </div>
+            <h3 class="font-bold text-slate-800 text-lg group-hover:text-amber-600 transition">
+              ${tituloLimpio}
+            </h3>
+          </div>
+          <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-900 group-hover:text-amber-600">
+            <span>Abrir actividad</span>
+            <span class="bg-slate-900 text-white group-hover:bg-amber-500 group-hover:text-slate-900 px-3 py-1.5 rounded-lg transition">
+              Entrar &rarr;
+            </span>
+          </div>
+        `;
+
+        contenedor.appendChild(botonCard);
+      });
+    }
+
+    async function cargarActividadesDesdeGitHub() {
+      const host = window.location.hostname;
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+
+      // Comprobar si está alojado en GitHub Pages (usuario.github.io/repositorio/...)
+      if (host.endsWith("github.io") && pathParts.length > 0) {
+        const usuario = host.split(".")[0];
+        const repositorio = pathParts[0];
+        const apiUrl = `https://api.github.com/repos/${usuario}/${repositorio}/contents/${CARPETA}`;
+
+        try {
+          const respuesta = await fetch(apiUrl);
+          if (!respuesta.ok) throw new Error("No se pudo leer la carpeta en GitHub");
+          
+          const datos = await respuesta.json();
+          const ficherosHtml = datos
+            .filter(item => item.type === "file" && item.name.toLowerCase().endsWith(".html"))
+            .map(item => item.name);
+
+          renderizarBotones(ficherosHtml, `Sincronizado con GitHub (${ficherosHtml.length} ficheros)`);
+          return;
+        } catch (error) {
+          console.warn("Error leyendo API de GitHub, usando lista de respaldo:", error);
+        }
+      }
+
+      // Si se abre en local o falla la conexión, usa la lista de respaldo
+      renderizarBotones(RESPALDO_LOCAL, "Modo local / respaldo");
+    }
+
+    cargarActividadesDesdeGitHub();
+  </script>
 
 </body>
 </html>
